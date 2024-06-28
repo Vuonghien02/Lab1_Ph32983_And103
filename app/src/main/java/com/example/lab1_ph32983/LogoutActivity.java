@@ -4,15 +4,20 @@ import android.content.DialogInterface;
 import android.content.Intent;
 import android.os.Bundle;
 import android.util.Log;
+import android.view.LayoutInflater;
 import android.view.View;
+import android.view.ViewGroup;
 import android.widget.Button;
 import android.widget.EditText;
+import android.widget.TextView;
 import android.widget.Toast;
 
 import androidx.activity.EdgeToEdge;
 import androidx.annotation.NonNull;
 import androidx.appcompat.app.AlertDialog;
 import androidx.appcompat.app.AppCompatActivity;
+import androidx.recyclerview.widget.LinearLayoutManager;
+import androidx.recyclerview.widget.RecyclerView;
 
 import com.google.android.gms.tasks.OnCompleteListener;
 import com.google.android.gms.tasks.Task;
@@ -22,8 +27,10 @@ import com.google.firebase.firestore.FirebaseFirestore;
 import com.google.firebase.firestore.QueryDocumentSnapshot;
 import com.google.firebase.firestore.QuerySnapshot;
 
+import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
 import java.util.Objects;
 
@@ -32,6 +39,9 @@ public class LogoutActivity extends AppCompatActivity {
     FirebaseFirestore db;
     Button btnLogout, btnForgotPassword;
 
+    private RecyclerView recyclerView;
+    private CityAdapter cityAdapter;
+    private List<Map<String, Object>> cityList = new ArrayList<>();
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -40,6 +50,10 @@ public class LogoutActivity extends AppCompatActivity {
         auth = FirebaseAuth.getInstance();
         btnLogout = (Button)findViewById(R.id.btnLogout);
         btnForgotPassword=(Button) findViewById(R.id.btnForgotPassword);
+        recyclerView = findViewById(R.id.recyclerView);
+        recyclerView.setLayoutManager(new LinearLayoutManager(this));
+        cityAdapter = new CityAdapter(cityList);
+        recyclerView.setAdapter(cityAdapter);
 
         FirebaseAuth.getInstance().signOut();
 
@@ -133,7 +147,7 @@ public class LogoutActivity extends AppCompatActivity {
 
     }
     String TAG = "LogoutActivity";
-    private void docdulieu(){
+    private void docdulieu() {
         db.collection("cities")
                 .get()
                 .addOnCompleteListener(new OnCompleteListener<QuerySnapshot>() {
@@ -142,9 +156,9 @@ public class LogoutActivity extends AppCompatActivity {
                         if (task.isSuccessful()) {
                             for (QueryDocumentSnapshot document : task.getResult()) {
                                 Log.d(TAG, document.getId() + " => " + document.getData());
-
-                                // bai tap: hien thi du lieu len giao dien RecycleView / ListView
+                                cityList.add(document.getData());
                             }
+                            cityAdapter.notifyDataSetChanged();
                         } else {
                             Log.d(TAG, "Error getting documents: ", task.getException());
                         }

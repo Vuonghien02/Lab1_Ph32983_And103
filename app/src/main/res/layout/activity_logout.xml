@@ -10,6 +10,7 @@
     tools:context=".LogoutActivity">
     <Button
         android:layout_width="300dp"
+        android:layout_marginTop="50dp"
         android:layout_height="wrap_content"
         android:backgroundTint="@color/black"
         android:id="@+id/btnLogout"
@@ -20,5 +21,10 @@
         android:layout_height="wrap_content"
         android:backgroundTint="#F44336"
         android:text="Quên Mật Khẩu" />
+    <androidx.recyclerview.widget.RecyclerView
+        android:id="@+id/recyclerView"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:layout_below="@id/btnForgotPassword" />
 
 </LinearLayout>
